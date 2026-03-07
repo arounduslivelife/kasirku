@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Fitur - Kasirku Update History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-indigo-950 text-slate-200">
+
+    <div class="max-w-4xl mx-auto px-6 py-20">
+        <a href="index.html"
+            class="inline-flex items-center gap-2 text-indigo-400 font-bold mb-12 hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                </path>
+            </svg>
+            KEMBALI KE BERANDA
+        </a>
+
+        <header class="mb-16">
+            <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-white mb-4">Log Update Fitur</h1>
+            <p class="text-indigo-300 text-lg">Riwayat perjalanan evolusi dari Sistem Inventori ke Sistem POS Modern.
+            </p>
+        </header>
+
+        <div class="space-y-12">
+            <!-- V2.2: Dynamic DB -->
+            <div class="relative pl-12 border-l-4 border-indigo-600">
+                <div class="absolute -left-3.5 top-0 w-6 h-6 bg-indigo-600 rounded-full border-4 border-indigo-950">
+                </div>
+                <div class="mb-2 flex items-center gap-3">
+                    <span
+                        class="px-3 py-1 bg-indigo-600 text-white text-[10px] font-black rounded-full uppercase tracking-widest">v2.2
+                        (Newest)</span>
+                    <span class="text-slate-400 text-xs font-bold uppercase tracking-widest">Maret 13:00</span>
+                </div>
+                <h2 class="text-2xl font-black text-white mb-4">Konfigurasi Database Dinamis via UI</h2>
+                <p class="text-indigo-200/70 mb-6 leading-relaxed">
+                    Menghilangkan ketergantungan pada file .env manual. Pengguna dapat mengatur server IP/Host database
+                    mysql langsung melalui halaman pengaturan web sebelum login.
+                </p>
+                <ul class="space-y-3 text-sm text-indigo-100 font-medium">
+                    <li class="flex items-start gap-2"><svg class="w-5 h-5 text-indigo-400 shrink-0" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg> Penambahan halaman <code>/config-db</code> dengan pengamanan middleware.</li>
+                    <li class="flex items-start gap-2"><svg class="w-5 h-5 text-indigo-400 shrink-0" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg> Sistem deteksi kegagalan koneksi otomatis mengarahkan ke halaman config.</li>
+                </ul>
+            </div>
+
+            <!-- V2.1: POS Evolution -->
+            <div class="relative pl-12 border-l-4 border-rose-600">
+                <div class="absolute -left-3.5 top-0 w-6 h-6 bg-rose-600 rounded-full border-4 border-indigo-950"></div>
+                <div class="mb-2 flex items-center gap-3">
+                    <span
+                        class="px-3 py-1 bg-rose-600 text-white text-[10px] font-black rounded-full uppercase tracking-widest">v2.1</span>
+                    <span class="text-slate-400 text-xs font-bold uppercase tracking-widest">Maret 10:00</span>
+                </div>
+                <h2 class="text-2xl font-black text-white mb-4">Evolusi POS & Dashboard Premium</h2>
+                <p class="text-indigo-200/70 mb-6 leading-relaxed">
+                    Transformasi besar-besaran menjadi aplikasi Point of Sale (POS) utuh dengan visual modern dan
+                    fungsionalitas profesional.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    <div class="p-4 bg-white/5 rounded-2xl border border-white/10">
+                        <strong class="text-rose-400 block mb-2">POS Terminal</strong>
+                        Interaktif dengan Alpine.js, Barcode scanning support, dan Real-time cart management.
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-2xl border border-white/10">
+                        <strong class="text-rose-400 block mb-2">Dashboard Visual</strong>
+                        Grafik tren penjualan, kartu statistik (Omzet/Laba), dan alert stok kritis.
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-2xl border border-white/10">
+                        <strong class="text-rose-400 block mb-2">Manajemen Biaya</strong>
+                        Modul Pengeluaran untuk mencatat cost operasional & kalkulasi Net Profit.
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-2xl border border-white/10">
+                        <strong class="text-rose-400 block mb-2">Struk Thermal</strong>
+                        Format receipt 58mm/80mm siap cetak dengan invoice generator otomatis.
+                    </div>
+                </div>
+            </div>
+
+            <!-- V1.5: Security & Bulk -->
+            <div class="relative pl-12 border-l-4 border-indigo-500/30">
+                <div class="absolute -left-3.5 top-0 w-6 h-6 bg-indigo-500/30 rounded-full border-4 border-indigo-950">
+                </div>
+                <div class="mb-2 flex items-center gap-3">
+                    <span
+                        class="px-3 py-1 bg-white/10 text-white text-[10px] font-black rounded-full uppercase tracking-widest">v1.5</span>
+                    <span class="text-slate-400 text-xs font-bold uppercase tracking-widest">Maret (Awal)</span>
+                </div>
+                <h2 class="text-2xl font-black text-white mb-4">Sistem Otoritas & Transaksi Borongan</h2>
+                <ul class="space-y-4 text-sm text-indigo-100/80">
+                    <li class="flex items-start gap-3">
+                        <div class="w-2 h-2 rounded-full bg-indigo-400 mt-1.5 shrink-0"></div>
+                        <span><strong>Dynamic Matrix Permissions</strong>: Atur kewenangan Admin & Kasir secara visual
+                            (Read/Write/Delete).</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <div class="w-2 h-2 rounded-full bg-indigo-400 mt-1.5 shrink-0"></div>
+                        <span><strong>Bulk Input (Multi-row)</strong>: Form stok masuk/keluar yang menduplikasi baris
+                            barang dalam satu transaksi.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <div class="w-2 h-2 rounded-full bg-indigo-400 mt-1.5 shrink-0"></div>
+                        <span><strong>Activity Log System</strong>: Mencatat setiap jejak digital user
+                            (Create/Update/Delete) demi keamanan data.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mt-20 pt-12 border-t border-white/5 text-center">
+            <p class="text-xs font-black text-indigo-500 uppercase tracking-widest">Built with Passion & Automation</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
