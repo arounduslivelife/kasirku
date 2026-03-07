@@ -35,7 +35,7 @@
                 </div>
                 <div>
                     <p class="text-sm font-medium text-gray-500 uppercase tracking-widest">Transaksi</p>
-                    <h3 class="text-2xl font-black text-gray-900">{{ $trxHariIni }} Nota</h3>
+                    <h3 class="text-2xl font-black text-gray-900">{{ number_format($trxHariIni, 0, ',', '.') }} Nota</h3>
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
                 <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 bg-rose-100 text-rose-600 rounded-lg flex items-center justify-center font-bold text-xs">
-                            {{ $item->jumlah }}
+                            {{ number_format($item->jumlah, 0, ',', '.') }}
                         </div>
                         <div>
                             <h4 class="text-sm font-bold text-gray-900 line-clamp-1 truncate w-40">{{ $item->nama }}</h4>

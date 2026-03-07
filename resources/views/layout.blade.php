@@ -10,6 +10,16 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         [x-cloak] { display: none !important; }
+        
+        /* Hide arrows from number inputs */
+        .no-spinners::-webkit-outer-spin-button,
+        .no-spinners::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .no-spinners {
+            -moz-appearance: textfield;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 antialiased h-screen overflow-hidden flex" x-data="{ sidebarOpen: false }">

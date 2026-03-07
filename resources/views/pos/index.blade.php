@@ -30,7 +30,7 @@
                         <p class="text-xs text-gray-400 mt-1" x-text="'Kode: ' + (product.kode || '-')"></p>
                         <div class="mt-4 flex items-center justify-between">
                             <span class="text-indigo-600 font-extrabold text-sm" x-text="formatCurrency(product.harga_jual)"></span>
-                            <span :class="product.jumlah <= 5 ? 'text-rose-600' : 'text-gray-500'" class="text-[10px] font-medium">Stok: <span x-text="product.jumlah"></span></span>
+                            <span :class="product.jumlah <= 5 ? 'text-rose-600' : 'text-gray-500'" class="text-[10px] font-medium">Stok: <span x-text="formatNumber(product.jumlah)"></span></span>
                         </div>
                     </div>
                 </template>
@@ -76,7 +76,7 @@
                         <div class="flex items-center gap-3">
                             <div class="flex items-center bg-gray-100 rounded-lg p-1">
                                 <button @click="updateQty(index, -1)" class="w-6 h-6 flex items-center justify-center text-gray-600 hover:bg-white rounded-md transition-all">-</button>
-                                <input type="number" x-model="item.qty" @input="validateQty(index)" class="w-10 text-center bg-transparent border-0 focus:ring-0 text-sm font-bold text-gray-900">
+                                <input type="number" x-model="item.qty" @input="validateQty(index)" class="w-10 text-center bg-transparent border-0 focus:ring-0 text-sm font-bold text-gray-900 no-spinners">
                                 <button @click="updateQty(index, 1)" class="w-6 h-6 flex items-center justify-center text-gray-600 hover:bg-white rounded-md transition-all">+</button>
                             </div>
                             <div class="text-right min-w-[100px]">
@@ -159,7 +159,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Uang Dibayar</label>
-                        <input type="number" x-model="bayar" class="w-full rounded-xl border-gray-200 shadow-sm focus:ring-indigo-600 text-lg font-bold">
+                        <input type="number" x-model="bayar" class="w-full rounded-xl border-gray-200 shadow-sm focus:ring-indigo-600 text-lg font-bold no-spinners">
                     </div>
                 </div>
 
@@ -319,8 +319,12 @@
                 return this.cart.reduce((sum, item) => sum + (item.qty * item.harga_jual) - item.diskon, 0);
             },
 
+            formatNumber(val) {
+                return new Intl.NumberFormat('id-ID').format(val);
+            },
+
             formatCurrency(amount) {
-                return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
+                return 'Rp ' + this.formatNumber(amount);
             },
 
             openPaymentModal() {

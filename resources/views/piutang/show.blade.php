@@ -101,7 +101,7 @@
                         <div class="w-8 h-8 bg-slate-100 text-slate-400 rounded-lg flex items-center justify-center font-bold text-xs">{{ $loop->iteration }}</div>
                         <div>
                             <div class="text-sm font-bold text-slate-800">{{ $item->produk->nama }}</div>
-                            <div class="text-[10px] text-slate-400 font-medium tracking-wide italic">{{ $item->qty }} x Rp {{ number_format($item->harga_jual, 0, ',', '.') }}</div>
+                            <div class="text-[10px] text-slate-400 font-medium tracking-wide italic">{{ number_format($item->qty, 0, ',', '.') }} x Rp {{ number_format($item->harga_jual, 0, ',', '.') }}</div>
                         </div>
                     </div>
                     <div class="text-sm font-black text-slate-900 tracking-tighter">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</div>

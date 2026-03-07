@@ -86,7 +86,7 @@
                          "Tanggal: " . $penjualan->created_at->format('d/m/Y H:i') . "\n\n";
                          
                 foreach($penjualan->details as $detail) {
-                    $waText .= "- " . $detail->produk->nama . " x" . number_format($detail->qty, 0) . " : Rp " . number_format($detail->subtotal, 0, ',', '.') . "\n";
+                    $waText .= "- " . $detail->produk->nama . " x" . number_format($detail->qty, 0, ',', '.') . " : Rp " . number_format($detail->subtotal, 0, ',', '.') . "\n";
                 }
                 
                 $waText .= "\nTOTAL: Rp " . number_format($penjualan->total_harga, 0, ',', '.') . "\n";

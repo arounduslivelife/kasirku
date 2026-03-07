@@ -120,14 +120,14 @@
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="flex items-center gap-3">
-                                                <input type="number" :name="'satuans['+index+'][konversi]'" x-model="s.konversi" class="w-24 bg-white border-gray-200 rounded-xl text-sm font-bold text-gray-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 transition-all shadow-sm" placeholder="12">
-                                                <span class="text-[11px] text-gray-400 font-bold italic whitespace-nowrap" x-text="'= ' + (s.konversi || 0) + ' ' + (document.getElementById('satuan').value || 'Unit')"></span>
+                                                <input type="number" :name="'satuans['+index+'][konversi]'" x-model="s.konversi" class="w-24 bg-white border-gray-200 rounded-xl text-sm font-bold text-gray-900 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 transition-all shadow-sm no-spinners" placeholder="12">
+                                                <span class="text-[11px] text-gray-400 font-bold italic whitespace-nowrap" x-text="'= ' + formatNumber(s.konversi || 0) + ' ' + (document.getElementById('satuan').value || 'Unit')"></span>
                                             </div>
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="relative group-hover:scale-[1.02] transition-transform">
                                                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400 font-bold text-xs pointer-events-none">Rp</span>
-                                                <input type="number" :name="'satuans['+index+'][harga_jual]'" x-model="s.harga_jual" class="w-full pl-10 bg-white border-gray-200 rounded-xl text-sm font-black text-indigo-700 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 transition-all shadow-sm" placeholder="0">
+                                                <input type="number" :name="'satuans['+index+'][harga_jual]'" x-model="s.harga_jual" class="w-full pl-10 bg-white border-gray-200 rounded-xl text-sm font-black text-indigo-700 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 transition-all shadow-sm no-spinners" placeholder="0">
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 text-center">
@@ -149,6 +149,12 @@
                         </template>
                     </div>
                 </div>
+
+                <script>
+                    function formatNumber(val) {
+                        return new Intl.NumberFormat('id-ID').format(val);
+                    }
+                </script>
 
                 <!-- Keterangan -->
                 <div>
