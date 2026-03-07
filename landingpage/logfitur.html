@@ -34,33 +34,58 @@
         </header>
 
         <div class="space-y-12">
-            <!-- V2.2: Dynamic DB -->
-            <div class="relative pl-12 border-l-4 border-indigo-600">
-                <div class="absolute -left-3.5 top-0 w-6 h-6 bg-indigo-600 rounded-full border-4 border-indigo-950">
+            <!-- V2.5: Enterprise Power -->
+            <div class="relative pl-12 border-l-4 border-emerald-500">
+                <div class="absolute -left-3.5 top-0 w-6 h-6 bg-emerald-500 rounded-full border-4 border-indigo-950">
                 </div>
                 <div class="mb-2 flex items-center gap-3">
                     <span
-                        class="px-3 py-1 bg-indigo-600 text-white text-[10px] font-black rounded-full uppercase tracking-widest">v2.2
+                        class="px-3 py-1 bg-emerald-600 text-white text-[10px] font-black rounded-full uppercase tracking-widest">v2.5
                         (Newest)</span>
-                    <span class="text-slate-400 text-xs font-bold uppercase tracking-widest">Maret 13:00</span>
+                    <span class="text-slate-400 text-xs font-bold uppercase tracking-widest">Maret 14:00</span>
                 </div>
-                <h2 class="text-2xl font-black text-white mb-4">Konfigurasi Database Dinamis via UI</h2>
+                <h2 class="text-2xl font-black text-white mb-4">Enterprise Power: Shift & Multi-Unit</h2>
                 <p class="text-indigo-200/70 mb-6 leading-relaxed">
-                    Menghilangkan ketergantungan pada file .env manual. Pengguna dapat mengatur server IP/Host database
-                    mysql langsung melalui halaman pengaturan web sebelum login.
+                    Update besar-besaran untuk mendukung operasional bisnis skala menengah ke atas dengan kontrol stok
+                    dan keuangan yang lebih ketat.
                 </p>
-                <ul class="space-y-3 text-sm text-indigo-100 font-medium">
-                    <li class="flex items-start gap-2"><svg class="w-5 h-5 text-indigo-400 shrink-0" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
-                            </path>
-                        </svg> Penambahan halaman <code>/config-db</code> dengan pengamanan middleware.</li>
-                    <li class="flex items-start gap-2"><svg class="w-5 h-5 text-indigo-400 shrink-0" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
-                            </path>
-                        </svg> Sistem deteksi kegagalan koneksi otomatis mengarahkan ke halaman config.</li>
-                </ul>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mb-6">
+                    <div
+                        class="p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-emerald-500/50 transition-all">
+                        <strong class="text-emerald-400 block mb-2">Shift Management</strong>
+                        Kontrol saldo laci kasir (Buka/Tutup Shift) dengan laporan selisih otomatis.
+                    </div>
+                    <div
+                        class="p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-emerald-500/50 transition-all">
+                        <strong class="text-emerald-400 block mb-2">Multi-Unit & Harga Grosir</strong>
+                        Jual produk dalam satuan Dus/Pak/Pcs dengan konversi stok & harga otomatis.
+                    </div>
+                    <div
+                        class="p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-emerald-500/50 transition-all">
+                        <strong class="text-emerald-400 block mb-2">Piutang & Cicilan</strong>
+                        Pencatatan hutang pelanggan (Bon) lengkap dengan dashboard pelacakan cicilan.
+                    </div>
+                    <div
+                        class="p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-emerald-500/50 transition-all">
+                        <strong class="text-emerald-400 block mb-2">WA Struk & Excel</strong>
+                        Kirim struk digital via WhatsApp dan export laporan penjualan ke Excel profesional.
+                    </div>
+                </div>
+            </div>
+
+            <!-- V2.2: Dynamic DB -->
+            <div class="relative pl-12 border-l-4 border-indigo-600/50 text-slate-400">
+                <div class="absolute -left-3.5 top-0 w-6 h-6 bg-indigo-600/50 rounded-full border-4 border-indigo-950">
+                </div>
+                <div class="mb-2 flex items-center gap-3">
+                    <span
+                        class="px-3 py-1 bg-white/10 text-white text-[10px] font-black rounded-full uppercase tracking-widest">v2.2</span>
+                    <span class="text-slate-500 text-xs font-bold uppercase tracking-widest">Maret 13:00</span>
+                </div>
+                <h2 class="text-2xl font-black text-white/50 mb-4">Konfigurasi Database Dinamis via UI</h2>
+                <p class="text-indigo-200/30 mb-6 leading-relaxed italic">
+                    Konfigurasi IP Server Database tanpa perlu edit file .env manual.
+                </p>
             </div>
 
             <!-- V2.1: POS Evolution -->

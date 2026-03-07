@@ -15,7 +15,7 @@ class PosController extends Controller
 {
     public function index()
     {
-        $produks = Produk::where('jumlah', '>', 0)->get();
+        $produks = Produk::with('satuans')->where('jumlah', '>', 0)->get();
         $pelanggans = Pelanggan::all();
         return view('pos.index', compact('produks', 'pelanggans'));
     }
@@ -34,12 +34,12 @@ class PosController extends Controller
         return DB::transaction(function () use ($request) {
             $hppService = new HppService();
             
-            // Generate Invoice Number: INV/YYYY/MM/DD/RAND
-            $invoiceNum = 'INV/' . date('Ymd') . '/' . strtoupper(bin2hex(random_bytes(3)));
+            $activeShift = \App\Models\Shift::where('user_id', Auth::id())->where('status', 'open')->first();
 
             $penjualan = Penjualan::create([
                 'nomor_invoice' => $invoiceNum,
                 'user_id' => Auth::id(),
+                'shift_id' => $activeShift->id,
                 'pelanggan_id' => $request->pelanggan_id,
                 'metode_bayar' => $request->metode_bayar,
                 'bayar' => $request->bayar,
@@ -55,18 +55,40 @@ class PosController extends Controller
             foreach ($request->items as $item) {
                 $produk = Produk::lockForUpdate()->find($item['produk_id']);
 
-                if ($produk->jumlah < $item['qty']) {
+                $qty_konversi = $item['qty'];
+                $produk_satuan_id = $item['produk_satuan_id'] ?? null;
+                $harga_jual = $produk->harga_jual;
+
+                if ($produk_satuan_id) {
+                    $satuan = \App\Models\ProdukSatuan::find($produk_satuan_id);
+                    if ($satuan) {
+                        $qty_konversi = $item['qty'] * $satuan->konversi;
+                        $harga_jual = $satuan->harga_jual;
+                    }
+                }
+
+                if ($produk->jumlah < $qty_konversi) {
                     throw new \Exception('Stok ' . $produk->nama . ' tidak mencukupi.');
                 }
 
-                $subtotal = $item['qty'] * $produk->harga_jual;
-                $totalHpp = $hppService->hitungHppKeluar($produk, $item['qty']);
+                $subtotalOriginal = $item['qty'] * $harga_jual;
+                
+                // Calculate promo (Promo logic might need adjustment for multi-unit, for now we apply to line total)
+                $promoData = (new \App\Services\PromoService())->calculateDiscount($produk, $item['qty']);
+                $diskonPerItem = $promoData['diskon_per_item'] ?? 0;
+                $totalDiskonItem = $diskonPerItem * $item['qty'];
+                $subtotal = $subtotalOriginal - $totalDiskonItem;
+                
+                $totalHpp = $hppService->hitungHppKeluar($produk, $qty_konversi);
 
                 PenjualanDetail::create([
                     'penjualan_id' => $penjualan->id,
                     'produk_id' => $produk->id,
+                    'produk_satuan_id' => $produk_satuan_id,
                     'qty' => $item['qty'],
-                    'harga_jual' => $produk->harga_jual,
+                    'harga_jual' => $harga_jual,
+                    'diskon_produk' => $totalDiskonItem,
+                    'promo_id' => $promoData['promo_id'],
                     'hpp' => $totalHpp,
                     'subtotal' => $subtotal
                 ]);
@@ -74,7 +96,7 @@ class PosController extends Controller
                 // Record to invout for backwards compatibility or integrated reporting if needed
                 // For now, we use PenjualanDetail as the primary source for POS sales.
                 
-                $produk->jumlah -= $item['qty'];
+                $produk->jumlah -= $qty_konversi;
                 $produk->save();
 
                 $totalHarga += $subtotal;
@@ -84,7 +106,9 @@ class PosController extends Controller
             $penjualan->update([
                 'total_harga' => $totalHarga,
                 'total_item' => $totalItem,
-                'kembali' => $request->bayar - $totalHarga
+                'kembali' => $request->bayar - $totalHarga > 0 ? $request->bayar - $totalHarga : 0,
+                'status_bayar' => $request->bayar < $totalHarga ? 'Piutang' : 'Lunas',
+                'sisa_piutang' => $request->bayar < $totalHarga ? ($totalHarga - $request->bayar) : 0
             ]);
 
             return response()->json([

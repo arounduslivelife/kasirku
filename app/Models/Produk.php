@@ -22,4 +22,9 @@ class Produk extends Model
     {
         return $this->hasMany(Invout::class, 'produk_id');
     }
+
+    public function satuans()
+    {
+        return $this->hasMany(ProdukSatuan::class, 'produk_id');
+    }
 }

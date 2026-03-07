@@ -55,17 +55,32 @@
                 </div>
                 @endif
 
+                @php
+                    $activeShift = \App\Models\Shift::where('user_id', auth()->id())->where('status', 'open')->first();
+                @endphp
+
                 @if(auth()->user()->hasPermission('manage-pos'))
                 <a href="{{ route('pos.index') }}" class="{{ request()->routeIs('pos.index') ? 'bg-white text-indigo-700 shadow-md' : 'hover:bg-indigo-600' }} block px-4 py-3 rounded-xl transition-all duration-200 font-bold flex items-center gap-3">
                     <svg class="w-5 h-5 {{ request()->routeIs('pos.index') ? 'text-indigo-600' : 'text-indigo-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                     Buka Kasir (POS)
                 </a>
+
+                @if($activeShift)
+                <a href="{{ route('shift.close') }}" class="mt-1 bg-rose-600 hover:bg-rose-700 block px-4 py-3 rounded-xl transition-all duration-200 font-bold flex items-center gap-3 text-white border border-rose-400/30">
+                    <svg class="w-5 h-5 text-rose-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 11l3 3L22 4m-2 6V4m0 0H9m11 0l-7 7m-4 8H3a2 2 0 01-2-2v-5a2 2 0 012-2h11"></path></svg>
+                    Tutup Kasir
+                </a>
+                @endif
                 @endif
 
                 @if(auth()->user()->hasPermission('view-pos-history'))
                 <a href="{{ route('pos.history') }}" class="{{ request()->routeIs('pos.history') || request()->routeIs('pos.receipt') ? 'bg-indigo-800 shadow-inner' : 'hover:bg-indigo-600' }} block px-4 py-3 rounded-xl transition-all duration-200 font-medium flex items-center gap-3 mt-1 text-sm">
                     <svg class="w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                     Riwayat Penjualan
+                </a>
+                <a href="{{ route('piutang.index') }}" class="{{ request()->routeIs('piutang.*') ? 'bg-indigo-800 shadow-inner' : 'hover:bg-indigo-600' }} block px-4 py-3 rounded-xl transition-all duration-200 font-medium flex items-center gap-3 mt-1 text-sm">
+                    <svg class="w-5 h-5 text-rose-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Daftar Piutang (Bon)
                 </a>
                 @endif
                 @if(auth()->user()->hasPermission('view-produk') || auth()->user()->hasPermission('view-pelanggan') || auth()->user()->hasPermission('view-pemasok'))
@@ -153,6 +168,12 @@
                 <a href="{{ route('activity_log.index') }}" class="{{ request()->routeIs('activity_log.*') ? 'bg-indigo-800 shadow-inner' : 'hover:bg-indigo-600' }} block px-4 py-3 rounded-xl transition-all duration-200 font-medium flex items-center gap-3 mt-1">
                     <svg class="w-5 h-5 {{ request()->routeIs('activity_log.*') ? 'text-indigo-200' : 'text-indigo-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     Log Aktivitas
+                </a>
+                @endif
+                @if(auth()->user()->hasPermission('view-pos-history'))
+                <a href="{{ route('report.index') }}" class="{{ request()->routeIs('report.*') ? 'bg-indigo-800 shadow-inner' : 'hover:bg-indigo-600' }} block px-4 py-3 rounded-xl transition-all duration-200 font-medium flex items-center gap-3 mt-1 text-sm border-t border-indigo-600/30 pt-3">
+                    <svg class="w-5 h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Laporan Penjualan (Excel)
                 </a>
                 @endif
             </nav>

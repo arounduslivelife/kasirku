@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'permission' => \App\Http\Middleware\PermissionMiddleware::class,
             'db_config' => \App\Http\Middleware\DbConfigMiddleware::class,
+            'check_shift' => \App\Http\Middleware\CheckOpenShift::class,
         ]);
 
         $middleware->web(append: [

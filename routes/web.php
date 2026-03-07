@@ -15,6 +15,9 @@ use App\Http\Controllers\PosController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\DbConfigController;
+use App\Http\Controllers\ShiftController;
+use App\Http\Controllers\PiutangController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/config-db', [DbConfigController::class, 'index'])->name('db.config.index');
 Route::post('/config-db', [DbConfigController::class, 'store'])->name('db.config.store');
@@ -44,10 +47,28 @@ Route::middleware('auth')->group(function () {
     Route::resource('invout', InvoutController::class)->except(['index', 'show', 'edit', 'update'])->middleware('permission:manage-invout');
 
     // POS (Point of Sale)
-    Route::get('/pos', [PosController::class, 'index'])->name('pos.index')->middleware('permission:manage-pos');
-    Route::post('/pos', [PosController::class, 'store'])->name('pos.store')->middleware('permission:manage-pos');
+    Route::middleware(['check_shift'])->group(function () {
+        Route::get('/pos', [PosController::class, 'index'])->name('pos.index')->middleware('permission:manage-pos');
+        Route::post('/pos', [PosController::class, 'store'])->name('pos.store')->middleware('permission:manage-pos');
+    });
+    
     Route::get('/pos/history', [PosController::class, 'history'])->name('pos.history')->middleware('permission:view-pos-history');
     Route::get('/pos/receipt/{id}', [PosController::class, 'showReceipt'])->name('pos.receipt')->middleware('permission:view-pos-history');
+
+    // Shift Management
+    Route::get('/shift/open', [ShiftController::class, 'openForm'])->name('shift.open');
+    Route::post('/shift/open', [ShiftController::class, 'open']);
+    Route::get('/shift/close', [ShiftController::class, 'closeForm'])->name('shift.close');
+    Route::post('/shift/close', [ShiftController::class, 'close']);
+
+    // Manajemen Piutang
+    Route::get('/piutang', [PiutangController::class, 'index'])->name('piutang.index')->middleware('permission:view-pos-history');
+    Route::get('/piutang/{id}', [PiutangController::class, 'show'])->name('piutang.show')->middleware('permission:view-pos-history');
+    Route::post('/piutang/{id}/bayar', [PiutangController::class, 'bayar'])->name('piutang.bayar')->middleware('permission:perform-pos-sale');
+
+    // Laporan (Exports)
+    Route::get('/report', [ReportController::class, 'index'])->name('report.index')->middleware('permission:view-pos-history');
+    Route::post('/report/export', [ReportController::class, 'exportSales'])->name('report.export')->middleware('permission:view-pos-history');
 
     // Pengeluaran (Expenses)
     Route::resource('pengeluaran', PengeluaranController::class)->middleware('permission:manage-settings');

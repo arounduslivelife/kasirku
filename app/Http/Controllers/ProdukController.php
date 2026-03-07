@@ -31,14 +31,25 @@ class ProdukController extends Controller
         ]);
 
         $data = $request->all();
-        $data['jumlah'] = 0; // Kuantiti awal default selalu 0
+        $data['jumlah'] = 0; 
 
-        Produk::create($data);
+        $produk = Produk::create($data);
+
+        // Handle Multi-Units (Satuan Bertingkat)
+        if ($request->has('satuans')) {
+            foreach ($request->satuans as $satuan) {
+                if (!empty($satuan['nama_satuan']) && !empty($satuan['konversi'])) {
+                    $produk->satuans()->create($satuan);
+                }
+            }
+        }
+
         return redirect()->route('produk.index')->with('success', 'Produk berhasil ditambahkan. Stok dapat diisi melalui menu Stok Masuk.');
     }
 
     public function edit(Produk $produk)
     {
+        $produk->load('satuans');
         return view('produk.edit', compact('produk'));
     }
 
@@ -53,7 +64,19 @@ class ProdukController extends Controller
             'keterangan' => 'nullable'
         ]);
 
-        $produk->update($request->except('jumlah')); // Pastikan jumlah tidak tertimpa
+        $produk->update($request->except('jumlah')); 
+        
+        // Handle Multi-Units (Satuan Bertingkat)
+        if ($request->has('satuans')) {
+            // Delete removed units if needed, or just sync. For simplicity, we refresh.
+            $produk->satuans()->delete();
+            foreach ($request->satuans as $satuan) {
+                if (!empty($satuan['nama_satuan']) && !empty($satuan['konversi'])) {
+                    $produk->satuans()->create($satuan);
+                }
+            }
+        }
+
         return redirect()->route('produk.index')->with('success', 'Produk berhasil diperbarui.');
     }
 

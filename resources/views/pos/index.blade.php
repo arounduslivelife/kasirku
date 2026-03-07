@@ -58,7 +58,20 @@
                     <div class="flex items-center justify-between mb-4 bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
                         <div class="flex-1 pr-4">
                             <h5 class="text-sm font-bold text-gray-900 line-clamp-1" x-text="item.nama"></h5>
-                            <p class="text-[10px] text-gray-500" x-text="formatCurrency(item.harga_jual) + ' / ' + item.satuan"></p>
+                            <div class="flex items-center gap-1 mt-0.5">
+                                <template x-if="item.satuans && item.satuans.length > 0">
+                                    <select @change="changeSatuan(index, $event.target.value)" class="text-[9px] py-0 px-1 border-gray-200 rounded bg-gray-50 font-bold uppercase">
+                                        <option :value="item.satuan_asli" x-text="item.satuan_asli" :selected="item.satuan_dipilih === item.satuan_asli"></option>
+                                        <template x-for="s in item.satuans" :key="s.id">
+                                            <option :value="s.nama_satuan" x-text="s.nama_satuan" :selected="item.satuan_dipilih === s.nama_satuan"></option>
+                                        </template>
+                                    </select>
+                                </template>
+                                <template x-if="!item.satuans || item.satuans.length === 0">
+                                    <span class="text-[9px] text-gray-500 font-bold uppercase" x-text="item.satuan_dipilih"></span>
+                                </template>
+                                <span class="text-[9px] text-gray-400 font-medium" x-text="'@ ' + formatCurrency(item.harga_jual)"></span>
+                            </div>
                         </div>
                         <div class="flex items-center gap-3">
                             <div class="flex items-center bg-gray-100 rounded-lg p-1">
@@ -66,8 +79,14 @@
                                 <input type="number" x-model="item.qty" @input="validateQty(index)" class="w-10 text-center bg-transparent border-0 focus:ring-0 text-sm font-bold text-gray-900">
                                 <button @click="updateQty(index, 1)" class="w-6 h-6 flex items-center justify-center text-gray-600 hover:bg-white rounded-md transition-all">+</button>
                             </div>
-                            <div class="text-right min-w-[80px]">
-                                <span class="text-sm font-bold text-indigo-600" x-text="formatCurrency(item.qty * item.harga_jual)"></span>
+                            <div class="text-right min-w-[100px]">
+                                <template x-if="item.diskon > 0">
+                                    <div class="text-[10px] text-rose-500 font-bold line-through" x-text="formatCurrency(item.qty * item.harga_jual)"></div>
+                                </template>
+                                <span class="text-sm font-bold text-indigo-600" x-text="formatCurrency((item.qty * item.harga_jual) - item.diskon)"></span>
+                                <template x-if="item.nama_promo">
+                                    <div class="text-[9px] text-emerald-600 font-black uppercase tracking-tighter" x-text="item.nama_promo"></div>
+                                </template>
                             </div>
                             <button @click="removeFromCart(index)" class="text-rose-500 hover:text-rose-700">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -135,6 +154,7 @@
                             <option value="Tunai">Tunai</option>
                             <option value="Transfer">Transfer</option>
                             <option value="QRIS">QRIS</option>
+                            <option value="Piutang">Piutang (Tempo)</option>
                         </select>
                     </div>
                     <div>
@@ -144,14 +164,14 @@
                 </div>
 
                 <div class="p-6 rounded-2xl flex justify-between items-center" :class="bayar - totalCart() >= 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'">
-                    <span class="font-bold">Kembalian</span>
-                    <span class="text-2xl font-black" x-text="formatCurrency(bayar - totalCart())"></span>
+                    <span class="font-bold" x-text="bayar - totalCart() >= 0 ? 'Kembalian' : 'Sisa Hutang'"></span>
+                    <span class="text-2xl font-black" x-text="formatCurrency(Math.abs(bayar - totalCart()))"></span>
                 </div>
             </div>
             <div class="p-6 bg-gray-50 flex gap-4">
                 <button @click="paymentModal = false" class="flex-1 py-4 font-bold text-gray-600 hover:bg-white rounded-2xl transition-all border border-transparent hover:border-gray-200">Batal</button>
                 <button @click="processPayment()" 
-                        :disabled="processing || bayar < totalCart()"
+                        :disabled="processing || (metode_bayar !== 'Piutang' && bayar < totalCart()) || (metode_bayar === 'Piutang' && !pelanggan_id)"
                         class="flex-1 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-50">
                     <span x-show="!processing">PROSES & CETAK</span>
                     <span x-show="processing">Memproses...</span>
@@ -173,6 +193,7 @@
         return {
             search: '',
             products: @json($produks),
+            promos: @json(\App\Models\Promo::where('is_active', true)->get()),
             cart: [],
             paymentModal: false,
             processing: false,
@@ -209,11 +230,69 @@
                         produk_id: product.id,
                         nama: product.nama,
                         harga_jual: product.harga_jual,
-                        satuan: product.satuan,
+                        satuan_asli: product.satuan,
+                        satuan_dipilih: product.satuan,
+                        satuans: product.satuans || [],
+                        konversi: 1,
+                        produk_satuan_id: null,
+                        harga_asli: product.harga_jual,
+                        harga_jual: product.harga_jual,
                         qty: 1,
-                        stock: product.jumlah
+                        stock: product.jumlah,
+                        diskon: 0,
+                        promo_id: null,
+                        nama_promo: null
                     });
                 }
+                this.recalculatePromos();
+            },
+
+            changeSatuan(index, nama_satuan) {
+                const item = this.cart[index];
+                if (nama_satuan === item.satuan_asli) {
+                    item.satuan_dipilih = item.satuan_asli;
+                    item.harga_jual = item.harga_asli;
+                    item.konversi = 1;
+                    item.produk_satuan_id = null;
+                } else {
+                    const sat = item.satuans.find(s => s.nama_satuan === nama_satuan);
+                    if (sat) {
+                        item.satuan_dipilih = sat.nama_satuan;
+                        item.harga_jual = sat.harga_jual;
+                        item.konversi = sat.konversi;
+                        item.produk_satuan_id = sat.id;
+                    }
+                }
+                this.recalculatePromos();
+            },
+
+            recalculatePromos() {
+                this.cart.forEach(item => {
+                    const today = new Date().toISOString().split('T')[0];
+                    const activePromos = this.promos.filter(p => 
+                        p.produk_id === item.produk_id && 
+                        p.min_beli <= item.qty &&
+                        (!p.start_date || p.start_date <= today) &&
+                        (!p.end_date || p.end_date >= today)
+                    ).sort((a, b) => b.min_beli - a.min_beli);
+
+                    if (activePromos.length > 0) {
+                        const promo = activePromos[0];
+                        let diskonPerItem = 0;
+                        if (promo.tipe === 'persen') {
+                            diskonPerItem = (promo.nilai / 100) * item.harga_jual;
+                        } else {
+                            diskonPerItem = promo.nilai;
+                        }
+                        item.diskon = diskonPerItem * item.qty;
+                        item.promo_id = promo.id;
+                        item.nama_promo = promo.nama;
+                    } else {
+                        item.diskon = 0;
+                        item.promo_id = null;
+                        item.nama_promo = null;
+                    }
+                });
             },
 
             removeFromCart(index) {
@@ -225,6 +304,7 @@
                 const newQty = item.qty + amount;
                 if (newQty > 0 && newQty <= item.stock) {
                     item.qty = newQty;
+                    this.recalculatePromos();
                 }
             },
 
@@ -232,10 +312,11 @@
                 const item = this.cart[index];
                 if (item.qty > item.stock) item.qty = item.stock;
                 if (item.qty < 0.01) item.qty = 0.01;
+                this.recalculatePromos();
             },
 
             totalCart() {
-                return this.cart.reduce((sum, item) => sum + (item.qty * item.harga_jual), 0);
+                return this.cart.reduce((sum, item) => sum + (item.qty * item.harga_jual) - item.diskon, 0);
             },
 
             formatCurrency(amount) {
@@ -255,6 +336,7 @@
                     bayar: this.bayar,
                     items: this.cart.map(item => ({
                         produk_id: item.produk_id,
+                        produk_satuan_id: item.produk_satuan_id,
                         qty: item.qty
                     })),
                     _token: '{{ csrf_token() }}'
